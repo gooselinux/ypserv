@@ -1,0 +1,14 @@
+diff -up ypserv-2.19/lib/access.c.quieter ypserv-2.19/lib/access.c
+--- ypserv-2.19/lib/access.c.quieter	2008-09-25 13:12:17.000000000 +0200
++++ ypserv-2.19/lib/access.c	2008-09-25 13:12:17.000000000 +0200
+@@ -201,8 +201,8 @@ is_valid (struct svc_req *rqstp, const c
+     }
+   else
+     {
+-      if (status < 1 && ((sin->sin_addr.s_addr != oldaddr)
+-			 || (status != oldstatus)))
++      if ((status < 1 && status != -4) &&
++		((sin->sin_addr.s_addr != oldaddr) || (status != oldstatus)))
+ 	syslog (LOG_WARNING,
+ 		"refused connect from %s:%d to procedure %s (%s,%s;%d)\n",
+ 		inet_ntoa (sin->sin_addr), ntohs (sin->sin_port),

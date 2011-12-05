@@ -1,0 +1,125 @@
+#!/bin/sh
+#
+# ypserv:       Starts the yp-server
+#
+# Version:      @(#) /etc/init.d/ypserv.init 1.0
+#
+# Author:       Joerg Mertin <smurphy@stargate.bln.sub.org>
+#
+# chkconfig: - 26 74
+# description: ypserv is an implementation of the standard NIS/YP networking \
+#              protocol.  It allows network-wide distribution of hostname, \
+#              username, and other information databases. This is the NIS \
+#              server, and is not needed on NIS clients.
+# processname: ypserv
+# config: /etc/ypserv.conf
+#
+# See https://fedoraproject.org/wiki/Packaging:SysVInitScript for 
+# the guidelines document.
+
+# Source function library.
+[ -f /etc/rc.d/init.d/functions ] || exit 0
+. /etc/rc.d/init.d/functions
+
+# getting the YP domain name
+[ -e /etc/sysconfig/network ] && . /etc/sysconfig/network
+
+exec="/usr/sbin/ypserv"
+prog="ypserv"
+lockfile=/var/lock/subsys/$prog
+
+start() {
+    [ $UID -eq 0 ] || exit 4
+    [ -x $exec ] || exit 5
+    DOMAINNAME=`domainname`
+    if [ "$DOMAINNAME" = "(none)" -o "$DOMAINNAME" = "" ]; then
+	if [ -n "$NISDOMAIN" ]; then
+	    action $"Setting NIS domain name $NISDOMAIN: " domainname $NISDOMAIN
+	else
+	    exit 1
+	fi
+    fi
+    echo -n $"Starting YP server services: "
+    daemon $exec $YPSERV_ARGS
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    [ $UID -eq 0 ] || exit 4
+    [ -x $exec ] || exit 5
+    echo -n $"Stopping YP server services: "
+    killproc $prog
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo -n $"Reloading securenets and ypserv.conf file:"
+    killproc $prog -HUP
+    retval=$?
+    echo
+    return $retval
+}
+
+force_reload() {
+    restart
+}
+
+rh_status() {
+    # run checks to determine if the service is running or use generic status
+    status $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+usage() {
+    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+}
+
+# See how we were called.
+case "$1" in
+    start)
+	rh_status_q && exit 0
+	$1
+	;;
+    stop)
+        rh_status_q || exit 0
+	$1
+	;;
+    restart)
+	$1
+	;;
+    reload)
+	rh_status_q || exit 7
+	$1
+	;;
+    force-reload)
+	force_reload
+	;;
+    status)
+	rh_status
+	;;
+    condrestart|try-restart)
+	rh_status_q || exit 0
+	restart
+	;;
+    usage)
+	$1
+	;;
+    *)
+	usage
+	exit 2
+esac
+exit $?

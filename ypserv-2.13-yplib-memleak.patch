@@ -1,0 +1,62 @@
+diff -up ypserv-2.19/lib/yp_db.c.memleak ypserv-2.19/lib/yp_db.c
+--- ypserv-2.19/lib/yp_db.c.memleak	2004-04-14 13:47:02.000000000 +0200
++++ ypserv-2.19/lib/yp_db.c	2008-09-25 13:10:10.000000000 +0200
+@@ -200,6 +200,7 @@ ypdb_close_all (void)
+ 			 fast_open_files[i].map, i);
+ 	      free (fast_open_files[i].domain);
+ 	      free (fast_open_files[i].map);
++		  fast_open_files[i].domain = fast_open_files[i].map = NULL;
+ 	      _db_close (fast_open_files[i].dbp);
+ 	      fast_open_files[i].dbp = NULL;
+ 	      fast_open_files[i].flag = 0;
+@@ -232,8 +233,11 @@ ypdb_close (DB_FILE file)
+ 			log_msg ("ypdb_MUST_close (%s/%s|%d)",
+ 				 fast_open_files[i].domain,
+ 				 fast_open_files[i].map, i);
+-		      free (fast_open_files[i].domain);
+-		      free (fast_open_files[i].map);
++			  if (fast_open_files[i].domain != NULL)
++				  free (fast_open_files[i].domain);
++			  if (fast_open_files[i].map != NULL)
++				  free (fast_open_files[i].map);
++			  fast_open_files[i].domain = fast_open_files[i].map = NULL;
+ 		      _db_close (fast_open_files[i].dbp);
+ 		      fast_open_files[i].dbp = NULL;
+ 		      fast_open_files[i].flag = 0;
+@@ -279,6 +283,10 @@ ypdb_open (const char *domain, const cha
+ 	  fast_open_init = 0;
+ 	  for (i = 0; i < cached_filehandles; i++)
+ 	    {
++		  if (fast_open_files[i].domain != NULL)
++			  free (fast_open_files[i].domain);
++		  if (fast_open_files[i].map != NULL)
++			  free (fast_open_files[i].map);
+ 	      fast_open_files[i].domain =
+ 		fast_open_files[i].map = NULL;
+ 	      fast_open_files[i].dbp = (DB_FILE) NULL;
+@@ -334,7 +342,11 @@ ypdb_open (const char *domain, const cha
+ 	      Fopen tmp;
+ 
+ 	      if ((fast_open_files[i].dbp = _db_open (domain, map)) == NULL)
+-		return NULL;
++			return NULL;
++	      if (fast_open_files[i].domain != NULL)
++		  	free(fast_open_files[i].domain);
++	      if (fast_open_files[i].map != NULL)
++			free(fast_open_files[i].map);
+ 	      fast_open_files[i].domain = strdup (domain);
+ 	      fast_open_files[i].map = strdup (map);
+ 	      fast_open_files[i].flag |= F_OPEN_FLAG;
+@@ -375,8 +387,10 @@ ypdb_open (const char *domain, const cha
+ 			 fast_open_files[i].map, i);
+ 		log_msg ("Opening: %s/%s (%d)", domain, map, i);
+ 	      }
+-	    free (fast_open_files[i].domain);
+-	    free (fast_open_files[i].map);
++		if (fast_open_files[i].domain != NULL)
++			free (fast_open_files[i].domain);
++	    if (fast_open_files[i].map != NULL)
++			free (fast_open_files[i].map);
+ 	    _db_close (fast_open_files[i].dbp);
+ 
+ 	    fast_open_files[i].domain = strdup (domain);

@@ -1,0 +1,27 @@
+diff -up ypserv-2.19/lib/access.c.nomap ypserv-2.19/lib/access.c
+--- ypserv-2.19/lib/access.c.nomap	2005-05-31 15:37:43.000000000 +0200
++++ ypserv-2.19/lib/access.c	2008-09-25 13:09:06.000000000 +0200
+@@ -189,6 +189,8 @@ is_valid (struct svc_req *rqstp, const c
+ 		  status = -1;
+ 	      ypdb_close (dbp);
+ 	    }
++          else
++              status = -4;
+ 	}
+     }
+ 
+diff -up ypserv-2.19/ypserv/server.c.nomap ypserv-2.19/ypserv/server.c
+--- ypserv-2.19/ypserv/server.c.nomap	2006-01-10 20:22:20.000000000 +0100
++++ ypserv-2.19/ypserv/server.c	2008-09-25 13:09:06.000000000 +0200
+@@ -190,6 +190,11 @@ ypproc_match_2_svc (ypreq_key *argp, ypr
+ 	    log_msg ("\t-> Ignored (forbidden by securenets)");
+ 	  result->stat = YP_NOMAP;
+ 	  break;
++	case -4:
++	  if (debug_flag)
++	    log_msg ("\t-> Ignored (map name not found)");
++	  result->stat = YP_NOMAP;
++	  break;
+ 	}
+       return TRUE;
+     }

@@ -1,0 +1,113 @@
+diff -up ypserv-2.21/rpc.ypxfrd/ypxfrd.c.pidfile ypserv-2.21/rpc.ypxfrd/ypxfrd.c
+--- ypserv-2.21/rpc.ypxfrd/ypxfrd.c.pidfile	2010-01-21 18:07:46.000000000 +0100
++++ ypserv-2.21/rpc.ypxfrd/ypxfrd.c	2010-01-21 18:49:27.107770454 +0100
+@@ -59,6 +59,14 @@
+ #include "log_msg.h"
+ #include "compat.h"
+ 
++#ifdef HAVE_PATHS_H
++#include <paths.h>
++#endif
++#ifndef _PATH_VARRUN
++#define _PATH_VARRUN "/etc/"
++#endif
++#define _YPXFRD_PIDFILE _PATH_VARRUN"ypxfrd.pid"
++
+ extern void ypxfrd_freebsd_prog_1(struct svc_req *, SVCXPRT *);
+ 
+ int _rpcpmstart = 0;
+@@ -118,6 +126,7 @@ static void
+ sig_quit (int sig UNUSED)
+ {
+   pmap_unset (YPXFRD_FREEBSD_PROG, YPXFRD_FREEBSD_VERS);
++  unlink (_YPXFRD_PIDFILE);
+   exit (0);
+ }
+ 
+@@ -133,6 +142,69 @@ sig_hup (int sig UNUSED)
+   cached_filehandles = 0;
+ }
+ 
++/* Create a pidfile on startup */
++static void
++create_pidfile (void)
++{
++  int fd, left, written;
++  pid_t pid;
++  char pbuf[50], *ptr;
++  struct flock lock;
++
++  fd = open (_YPXFRD_PIDFILE, O_CREAT | O_RDWR,
++	     S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
++  if (fd < 0)
++    {
++      log_msg ("cannot create pidfile %s", _YPXFRD_PIDFILE);
++      if (debug_flag)
++	log_msg ("\n");
++    }
++
++  lock.l_type = F_WRLCK;
++  lock.l_start = 0;
++  lock.l_whence = SEEK_SET;
++  lock.l_len = 0;
++
++  /* Is the pidfile locked by another ypserv ? */
++  if (fcntl (fd, F_GETLK, &lock) < 0)
++    {
++      log_msg ("fcntl error");
++      if (debug_flag)
++	log_msg ("\n");
++    }
++  if (lock.l_type == F_UNLCK)
++    pid = 0;	        /* false, region is not locked by another proc */
++  else
++    pid = lock.l_pid;	/* true, return pid of lock owner */
++
++  if (0 != pid)
++    {
++      log_msg ("rpc.ypxfrd already running (pid %d) - exiting", pid);
++      if (debug_flag)
++	log_msg ("\n");
++      exit (1);
++    }
++
++  /* write lock */
++  lock.l_type = F_WRLCK;
++  lock.l_start = 0;
++  lock.l_whence = SEEK_SET;
++  lock.l_len = 0;
++  if (0 != fcntl (fd, F_SETLK, &lock))
++    log_msg ("cannot lock pidfile");
++  sprintf (pbuf, "%ld\n", (long) getpid ());
++  left = strlen (pbuf);
++  ptr = pbuf;
++  while (left > 0)
++    {
++      if ((written = write (fd, ptr, left)) <= 0)
++	return;			/* error */
++      left -= written;
++      ptr += written;
++    }
++  return;
++}
++
+ static void
+ Usage (int exitcode)
+ {
+@@ -272,6 +344,8 @@ main (int argc, char **argv)
+ 	  }
+       }
+ 
++  create_pidfile ();
++
+   /* Change current directory to database location */
+   if (chdir(path_ypdb) < 0)
+     {
+@@ -448,6 +522,7 @@ main (int argc, char **argv)
+ 
+   svc_run();
+   log_msg("svc_run returned");
++  unlink (_YPXFRD_PIDFILE);
+   exit(1);
+   /* NOTREACHED */
+ }

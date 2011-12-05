@@ -1,0 +1,11 @@
+diff -up ypserv-2.19/ypserv/server.c.nodbclose ypserv-2.19/ypserv/server.c
+--- ypserv-2.19/ypserv/server.c.nodbclose	2010-01-26 15:40:51.000000000 +0100
++++ ypserv-2.19/ypserv/server.c	2010-01-26 18:19:33.478791025 +0100
+@@ -590,7 +590,6 @@ ypproc_xfr_2_svc (ypreq_xfr *argp, ypres
+ 	    log_msg ("refuse to transfer %s from %s, no trusted master",
+ 		     argp->map_parms.map, inet_ntoa (rqhost->sin_addr));
+ 
+-	  ypdb_close (dbp);
+ 	  result->xfrstat = YPXFR_NODOM;
+ 	  return TRUE;
+ 	}

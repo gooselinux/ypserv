@@ -1,0 +1,96 @@
+diff -up ypserv-2.19/makedbm/Makefile.in.debuginfo ypserv-2.19/makedbm/Makefile.in
+--- ypserv-2.19/makedbm/Makefile.in.debuginfo	2006-01-10 20:22:30.000000000 +0100
++++ ypserv-2.19/makedbm/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -96,7 +96,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/mknetid/Makefile.in.debuginfo ypserv-2.19/mknetid/Makefile.in
+--- ypserv-2.19/mknetid/Makefile.in.debuginfo	2006-01-10 20:22:31.000000000 +0100
++++ ypserv-2.19/mknetid/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -97,7 +97,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/revnetgroup/Makefile.in.debuginfo ypserv-2.19/revnetgroup/Makefile.in
+--- ypserv-2.19/revnetgroup/Makefile.in.debuginfo	2006-01-10 20:22:31.000000000 +0100
++++ ypserv-2.19/revnetgroup/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -98,7 +98,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/rpc.yppasswdd/Makefile.in.debuginfo ypserv-2.19/rpc.yppasswdd/Makefile.in
+--- ypserv-2.19/rpc.yppasswdd/Makefile.in.debuginfo	2006-01-10 20:22:31.000000000 +0100
++++ ypserv-2.19/rpc.yppasswdd/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -103,7 +103,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/rpc.ypxfrd/Makefile.in.debuginfo ypserv-2.19/rpc.ypxfrd/Makefile.in
+--- ypserv-2.19/rpc.ypxfrd/Makefile.in.debuginfo	2006-01-10 20:22:31.000000000 +0100
++++ ypserv-2.19/rpc.ypxfrd/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -98,7 +98,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/yphelper/Makefile.in.debuginfo ypserv-2.19/yphelper/Makefile.in
+--- ypserv-2.19/yphelper/Makefile.in.debuginfo	2006-01-10 20:22:32.000000000 +0100
++++ ypserv-2.19/yphelper/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -95,7 +95,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/yppush/Makefile.in.debuginfo ypserv-2.19/yppush/Makefile.in
+--- ypserv-2.19/yppush/Makefile.in.debuginfo	2006-01-10 20:22:32.000000000 +0100
++++ ypserv-2.19/yppush/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -96,7 +96,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+diff -up ypserv-2.19/ypserv/Makefile.in.debuginfo ypserv-2.19/ypserv/Makefile.in
+--- ypserv-2.19/ypserv/Makefile.in.debuginfo	2006-01-10 20:22:32.000000000 +0100
++++ ypserv-2.19/ypserv/Makefile.in	2008-09-25 13:12:39.000000000 +0200
+@@ -98,7 +98,7 @@ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ INSTALL_DATA = @INSTALL_DATA@
+ #
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 555
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ -m 555
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@

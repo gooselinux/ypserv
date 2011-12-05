@@ -1,0 +1,128 @@
+#!/bin/sh
+#
+# yppasswdd:    Starts the YP password changing server
+#
+# Version:      @(#) /etc/init.d/yppasswdd 1.0
+#
+# chkconfig: - 66 34
+# description:  yppasswdd is the RPC server that lets users  change  their \
+#		passwords  in  the presence of NIS (a.k.a. YP). It must be \
+#		run on the NIS master server for that NIS domain. The client \
+#		program is known as yppasswd in most cases.
+# processname: rpc.yppasswdd
+#
+# See https://fedoraproject.org/wiki/Packaging:SysVInitScript for 
+# the guidelines document.
+
+# Source function library.
+[ -f /etc/rc.d/init.d/functions ] || exit 0
+. /etc/rc.d/init.d/functions
+
+# getting the YP domain name
+. /etc/sysconfig/network
+
+execname="rpc.yppasswdd"
+exec="/usr/sbin/$execname"
+prog="yppasswdd"
+
+# Get the settings
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+lockfile=/var/lock/subsys/$prog
+pidfile=/var/run/$prog.pid
+
+if [ "$ETCDIR" ]; then
+  YPPASSWDD_ARGS="$YPPASSWDD_ARGS -D $ETCDIR"
+fi
+
+if [ "$PASSWDFILE" ]; then
+  YPPASSWDD_ARGS="$YPPASSWDD_ARGS -p $PASSWDFILE"
+fi
+
+if [ "$SHADOWFILE" ]; then
+  YPPASSWDD_ARGS="$YPPASSWDD_ARGS -s $SHADOWFILE"
+fi
+
+start() {
+    [ $UID -eq 0 ] || exit 4
+    [ -x $exec ] || exit 5
+    echo -n $"Starting YP passwd service: "
+    daemon --pidfile=$pidfile $exec $YPPASSWDD_ARGS
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    [ $UID -eq 0 ] || exit 4
+    [ -x $exec ] || exit 5
+    echo -n $"Stopping YP passwd service: "
+    killproc -p $pidfile $execname
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    restart
+}
+
+force_reload() {
+    restart
+}
+
+rh_status() {
+    # run checks to determine if the service is running or use generic status
+    status -p $pidfile -l $prog $execname
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+usage() {
+    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+}
+
+# See how we were called.
+case "$1" in
+    start)
+	rh_status_q && exit 0
+	$1
+	;;
+    stop)
+	rh_status_q || exit 0
+	$1
+	;;
+    restart)
+	$1
+	;;
+    reload)
+	rh_status_q || exit 7
+	$1
+	;;
+    force-reload)
+	force_reload
+	;;
+    status)
+	rh_status
+	;;
+    condrestart|try-restart)
+	rh_status_q || exit 0
+	restart
+	;;
+    usage)
+	$1
+	;;
+    *)
+	usage
+	exit 2
+esac
+exit $?
